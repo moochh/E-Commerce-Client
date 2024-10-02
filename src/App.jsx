@@ -6,7 +6,7 @@ import axios from 'axios';
 import Cart from './pages/Cart';
 
 axios.defaults.baseURL = 'https://vercel-server-flax.vercel.app';
-axios.defaults.baseURL = 'http://localhost:3000';
+// axios.defaults.baseURL = 'http://localhost:3000';
 
 function App() {
 	return (
