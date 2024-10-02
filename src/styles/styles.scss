@@ -1,0 +1,272 @@
+:root {
+	// Text
+	color: var(--black);
+	font-size: 16px;
+	font-weight: normal;
+
+	// Palette
+	--offwhite: #f4f5f7;
+	--light: #e1e1e1;
+	--lighter: #efefef;
+	--dark-gray: #909090;
+	--gray: #bfbfbf;
+	--button-bg: #454545;
+	--border: #acacac;
+	--black: #2c2c2c;
+	--dark: #585858;
+	--primary: #0094fe;
+	--light-primary: #d1ecff;
+	--secondary: #fe6a00;
+	--light-secondary: #ffebdd;
+
+	// Toast
+	--light-red: #feeeef;
+	--red: #d86477;
+
+	--light-green: #e9f5f5;
+	--green: #13978a;
+
+	--light-orange: #f5ede3;
+	--orange: #e87f38;
+}
+
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+	transition: 0.3s ease-in-out;
+	font-size: 16px;
+	font-weight: normal;
+
+	// Anchors
+	text-decoration: none;
+
+	// Buttons & Inputs
+	background: none;
+	border: none;
+	outline: inherit;
+
+	color: var(--black);
+}
+
+input[type='number']::-webkit-inner-spin-button,
+input[type='number']::-webkit-outer-spin-button {
+	-webkit-appearance: none;
+	margin: 0;
+}
+
+/* Hide arrows in Firefox */
+input[type='number'] {
+	-moz-appearance: textfield; /* Remove default styling */
+}
+
+/* Optional: Additional styles for better UX */
+input[type='number'] {
+	/* Adjust styles as needed */
+	padding: 8px;
+	width: 100%; /* Full width */
+}
+
+body {
+	background-color: var(--offwhite);
+	padding: 32px 52px;
+	width: 100vw;
+	display: flex;
+	flex-direction: column;
+}
+
+#root {
+	width: 100%;
+}
+
+table {
+	width: 100%;
+	border-collapse: collapse;
+}
+
+th,
+td {
+	border: 1px solid #ddd;
+	padding: 8px;
+	text-align: left;
+}
+
+td.description {
+	max-width: 250px;
+}
+
+th {
+	background-color: #f2f2f2;
+	font-weight: bold;
+}
+
+button.primary {
+	background-color: var(--primary);
+	color: white;
+}
+
+.inputs-container {
+	display: flex;
+	gap: 24px;
+	margin-top: 16px;
+}
+
+.input-group {
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+	position: relative;
+	flex: 1;
+
+	textarea,
+	input {
+		border: 1px solid var(--dark-gray);
+		border-radius: 12px;
+		padding: 12px;
+	}
+}
+
+.categories-dropdown {
+	position: absolute;
+	background-color: white;
+	border-radius: 12px;
+	top: 100%;
+	left: 50%;
+	transform: translate(-50%, 12px);
+	display: flex;
+	flex-direction: column;
+	z-index: 10;
+
+	p {
+		cursor: pointer;
+		padding: 12px;
+		text-wrap: nowrap;
+		border-radius: 12px;
+
+		&:hover {
+			background-color: var(--primary);
+			color: white;
+		}
+	}
+}
+
+#addProductButton {
+	margin-top: 24px;
+}
+
+.delete-product {
+	background-color: var(--light-red);
+	cursor: pointer;
+	color: var(--red);
+	text-align: center;
+
+	&:hover {
+		background-color: var(--red);
+		color: white;
+	}
+}
+
+.section-header {
+	display: flex;
+	gap: 64px;
+	align-items: end;
+
+	button {
+		height: fit-content;
+	}
+}
+
+nav {
+	background-color: var(--primary);
+	border-radius: 12px;
+	padding: 8px;
+	display: flex;
+	justify-content: end;
+	margin-bottom: 32px;
+
+	button {
+		color: white;
+		background-color: transparent;
+
+		.link {
+			color: white;
+		}
+
+		&:hover {
+			background-color: var(--black);
+		}
+	}
+}
+
+.cart-list,
+.cart-container {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+	gap: 12px;
+	margin-top: 12px;
+
+	.card {
+		width: 100%;
+		background-color: white;
+		padding: 12px;
+		border-radius: 12px;
+		display: flex;
+		flex-direction: column;
+
+		p {
+			font-weight: 600;
+		}
+
+		button {
+			margin-top: 12px;
+			align-self: flex-end;
+		}
+	}
+}
+
+.cart-container {
+	.cart-actions {
+		display: flex;
+		gap: 8px;
+		justify-content: end;
+	}
+
+	button {
+		background-color: var(--red);
+
+		&.quantity-button {
+			background-color: var(--light);
+		}
+	}
+}
+
+.cart-user {
+	padding: 12px 16px;
+	border-radius: 12px;
+	border: 1px solid var(--dark-gray);
+	width: fit-content;
+	cursor: pointer;
+	margin-bottom: 24px;
+	position: relative;
+}
+
+.cart-users-container {
+	position: absolute;
+	top: calc(100% + 12px);
+	left: 0;
+	z-index: 5;
+	background-color: white;
+	border-radius: 12px;
+
+	p {
+		text-wrap: nowrap;
+		padding: 12px 16px;
+		cursor: pointer;
+		border-radius: 12px;
+
+		&:hover {
+			background-color: var(--primary);
+			color: white;
+		}
+	}
+}
