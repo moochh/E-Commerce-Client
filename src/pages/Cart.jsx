@@ -1,85 +1,112 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import Nav from '../components/Nav';
-import ListForCart from '../components/cart/ListForCart';
-import CartUser from '../components/cart/CartUser';
 
 const Cart = () => {
 	const [cart, setCart] = useState([]);
-	const [cartProducts, setCartProducts] = useState([]);
 	const [allProducts, setAllProducts] = useState([]);
-	const [selectedUser, setSelectedUser] = useState(null);
-	const [quantityChanged, setQuantityChanged] = useState(0);
+	const userID = '9a7b3d29-bf02-4cb8-9b1e-1d394c54e000';
+	const isInitialMount = useRef(true);
+
+	useEffect(() => {
+		async function fetchAllProducts() {
+			const response = await axios.get('/products');
+
+			const data = response.data;
+			setAllProducts(data);
+		}
+
+		fetchAllProducts();
+	}, []);
 
 	useEffect(() => {
 		async function fetchCart() {
-			if (!selectedUser) {
-				return;
-			}
-			const response = await axios.get(`/cart/${selectedUser.id}`);
+			const response = await axios.get(`/cart/${userID}`);
 			const data = response.data;
 
-			// Sort by product_id
-			data.sort((a, b) => a.product_id - b.product_id);
+			const updatedCart = data
+				.map((cartProduct) => {
+					const productData = allProducts.find(
+						(product) => product.id === cartProduct.product_id
+					);
 
-			setCart(data.map((cart) => cart.product_id));
-			setCartProducts(data);
+					if (productData) {
+						// Assign quantity if productData is found
+						return {
+							...productData,
+							quantity: cartProduct.quantity
+						};
+					}
+					return null; // Return null if the product is not found
+				})
+				.filter(Boolean); // Remove any null values
+
+			// Set the cart state with the updated cart
+			setCart(updatedCart);
 		}
 
-		fetchCart();
-	}, [selectedUser, quantityChanged]);
+		if (isInitialMount.current) {
+			isInitialMount.current = false;
+		} else {
+			fetchCart();
+		}
+	}, [allProducts]);
+
+	const addToCart = async (product) => {
+		product.quantity = 1;
+		setCart((prevCart) => [...prevCart, product]);
+
+		const body = {
+			product_id: product.id,
+			quantity: product.quantity
+		};
+
+		const response = await axios.post(`/cart/${userID}`, body);
+		console.log(response.status);
+	};
+
+	const removeFromCart = async (id) => {
+		setCart((prevCart) => prevCart.filter((cartItem) => cartItem.id !== id));
+
+		const body = {
+			product_id: id
+		};
+
+		const response = await axios.delete(`/cart/${userID}`, { data: body });
+		console.log(response.status);
+	};
 
 	const addQuantity = async (id, quantity) => {
-		try {
-			const data = new Object();
-			data.product_id = id;
-			data.quantity = quantity + 1;
+		setCart((prevCart) => {
+			const product = prevCart.find((cartItem) => cartItem.id === id);
+			product.quantity = quantity + 1;
+			return [...prevCart];
+		});
 
-			const result = await axios.put(`/cart/${selectedUser.id}`, data);
-			console.log(result);
+		const body = {
+			product_id: id,
+			quantity: quantity + 1
+		};
 
-			if (result.status === 200) {
-				setQuantityChanged(quantityChanged + 1);
-			}
-		} catch (error) {
-			console.log(error);
-		}
+		const response = await axios.put(`/cart/${userID}`, body);
+		console.log(response.status);
 	};
 
 	const subtractQuantity = async (id, quantity) => {
 		if (quantity > 1) {
-			try {
-				const data = new Object();
-				data.product_id = id;
-				data.quantity = quantity - 1;
-
-				const result = await axios.put(`/cart/${selectedUser.id}`, data);
-				console.log(result);
-
-				if (result.status === 200) {
-					setQuantityChanged(quantityChanged + 1);
-				}
-			} catch (error) {
-				console.log(error);
-			}
-		}
-	};
-
-	const removeFromCart = async (id) => {
-		try {
-			const data = new Object();
-			data.product_id = id;
-
-			const result = await axios.delete(`/cart/${selectedUser.id}`, {
-				data: data
+			setCart((prevCart) => {
+				const product = prevCart.find((cartItem) => cartItem.id === id);
+				product.quantity = quantity - 1;
+				return [...prevCart];
 			});
-			console.log(result);
 
-			if (result.status === 200) {
-				setCart((cart) => cart.filter((cartId) => cartId !== id));
-			}
-		} catch (error) {
-			console.log(error);
+			const body = {
+				product_id: id,
+				quantity: quantity - 1
+			};
+
+			const response = await axios.put(`/cart/${userID}`, body);
+			console.log(response.status);
 		}
 	};
 
@@ -87,34 +114,49 @@ const Cart = () => {
 		<>
 			<Nav />
 
-			<CartUser notifyUserSelect={setSelectedUser} />
+			<div className="flex gapped">
+				<h1>Cart</h1>
 
-			<h1>Cart</h1>
+				<h1 className="light-keep">
+					Total:{' '}
+					{parseFloat(
+						cart
+							.reduce(
+								(acc, product) =>
+									acc + parseFloat(product.price) * product.quantity,
+								0
+							)
+							.toFixed(2)
+					)}
+				</h1>
+			</div>
+
+			{cart.length === 0 && <p>No items in cart.</p>}
 
 			<div className="cart-container">
-				{cart.map((id) => {
-					const product = allProducts.find((product) => product.id === id);
-					const cartProduct = cartProducts.find(
-						(cartProduct) => cartProduct.product_id === id
-					);
-
+				{cart.map((product) => {
 					return (
-						<div className="card" key={id}>
+						<div className="card" key={product.id}>
 							<p>{product.name}</p>
-							<p>Quantity: {cartProduct.quantity}</p>
+							<p>Quantity: {product.quantity}</p>
+							<p>Price: {product.price}</p>
 
 							<div className="cart-actions">
 								<button
 									className="quantity-button"
-									onClick={() => addQuantity(id, cartProduct.quantity)}>
+									onClick={() => addQuantity(product.id, product.quantity)}>
 									+
 								</button>
 								<button
 									className="quantity-button"
-									onClick={() => subtractQuantity(id, cartProduct.quantity)}>
+									onClick={() =>
+										subtractQuantity(product.id, product.quantity)
+									}>
 									-
 								</button>
-								<button className="primary" onClick={() => removeFromCart(id)}>
+								<button
+									className="primary"
+									onClick={() => removeFromCart(product.id)}>
 									Remove{' '}
 								</button>
 							</div>
@@ -123,12 +165,30 @@ const Cart = () => {
 				})}
 			</div>
 
-			<ListForCart
-				cart={cart}
-				setCart={setCart}
-				setAllProducts={setAllProducts}
-				selectedUser={selectedUser}
-			/>
+			<h1 className="mt">Products</h1>
+
+			{allProducts.length === cart.length && <p>All products added to cart.</p>}
+
+			<div className="cart-list">
+				{allProducts.map((product) => {
+					const notInCart = !cart.some(
+						(cartItem) => cartItem.id === product.id
+					);
+
+					if (notInCart) {
+						return (
+							<div
+								className="card"
+								key={product.id}
+								onClick={() => addToCart(product)}>
+								<p>{product.name}</p>
+
+								<button>Add to cart</button>
+							</div>
+						);
+					}
+				})}
+			</div>
 		</>
 	);
 };

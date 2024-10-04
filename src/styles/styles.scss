@@ -220,6 +220,8 @@ nav {
 		button {
 			margin-top: 12px;
 			align-self: flex-end;
+			background-color: var(--primary);
+			color: white;
 		}
 	}
 }
@@ -236,37 +238,28 @@ nav {
 
 		&.quantity-button {
 			background-color: var(--light);
+			color: var(--black);
+			font-weight: bold;
 		}
 	}
 }
 
-.cart-user {
-	padding: 12px 16px;
-	border-radius: 12px;
-	border: 1px solid var(--dark-gray);
-	width: fit-content;
-	cursor: pointer;
-	margin-bottom: 24px;
-	position: relative;
+.mt {
+	margin-top: 32px;
 }
 
-.cart-users-container {
-	position: absolute;
-	top: calc(100% + 12px);
-	left: 0;
-	z-index: 5;
-	background-color: white;
-	border-radius: 12px;
+.flex {
+	display: flex;
 
-	p {
-		text-wrap: nowrap;
-		padding: 12px 16px;
-		cursor: pointer;
-		border-radius: 12px;
-
-		&:hover {
-			background-color: var(--primary);
-			color: white;
-		}
+	&.gapped {
+		gap: 24px;
 	}
+}
+
+.light-keep {
+	color: var(--dark-gray);
+}
+
+.red {
+	background-color: var(--red) !important;
 }

@@ -14,6 +14,12 @@ const Nav = () => {
 					Cart
 				</Link>
 			</button>
+
+			<button>
+				<Link to="/favorites" className="link">
+					Favorites
+				</Link>
+			</button>
 		</nav>
 	);
 };

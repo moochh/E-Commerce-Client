@@ -4,6 +4,7 @@ import Home from './pages/Home';
 import React from 'react';
 import axios from 'axios';
 import Cart from './pages/Cart';
+import Favorites from './pages/Favorites';
 
 axios.defaults.baseURL = 'https://prof-elec.vercel.app/';
 // axios.defaults.baseURL = 'http://localhost:3000';
@@ -14,6 +15,7 @@ function App() {
 			<Routes>
 				<Route path="/" element={<Home />} />
 				<Route path="/cart" element={<Cart />} />
+				<Route path="/favorites" element={<Favorites />} />
 			</Routes>
 		</Router>
 	);
