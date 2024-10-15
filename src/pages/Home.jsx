@@ -284,9 +284,9 @@ const Home = () => {
 			<div className="inputs-container">
 				<div className="input-group" style={{ marginTop: '12px' }}>
 					<p className="label">Short Description</p>
-					<textarea
+					<input
 						type="text"
-						placeholder="Short Description"
+						placeholder="E.g. White tray table"
 						ref={shortDescriptionRef}
 						rows="2"
 					/>
