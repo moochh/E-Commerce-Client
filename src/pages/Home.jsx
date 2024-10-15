@@ -303,6 +303,7 @@ const Home = () => {
 				</div>
 			</div>
 
+			<p>Use square images.</p>
 			<div className="inputs-container">
 				<div
 					className="input-group image-upload-container"

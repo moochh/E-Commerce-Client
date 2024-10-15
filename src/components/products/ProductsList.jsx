@@ -26,6 +26,8 @@ const ProductsList = ({ trigger, triggerCategories, setProductNames }) => {
 		console.log(result);
 
 		if (result.status === 200) {
+			await axios.delete(`/delete-all/${id}`);
+
 			alert('Product deleted successfully');
 			setChanged(changed + 1);
 			triggerCategories();
