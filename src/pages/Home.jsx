@@ -201,6 +201,9 @@ const Home = () => {
 		imageRef.current.click();
 	};
 
+	const longDescriptionSample =
+		'Adjustable feet allow you to level the table on uneven floors. \n\nPre-drilled leg holes for easy assembly. \n\nBoard-on-frame is a strong and lightweight material with a frame in wood, particleboard or fiberboard and a recycled paper filling. It requires less raw materials and is easy to transport, which reduces the environmental impact. \n\nPre-drilled holes for legs, for easy assembly. \n\nAdjustable feet make the table stand steady also on uneven floors. \n\nThe tabletop has pre-drilled holes to make it easier to attach to the underframe.';
+
 	return (
 		<>
 			<Nav />
@@ -296,9 +299,9 @@ const Home = () => {
 					<p className="label">Long Description</p>
 					<textarea
 						type="text"
-						placeholder="Long Description"
+						placeholder={longDescriptionSample}
 						ref={longDescriptionRef}
-						rows="5"
+						rows="15"
 					/>
 				</div>
 			</div>
