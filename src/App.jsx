@@ -9,7 +9,7 @@ import Checkout from './pages/Checkout';
 import PostCheckout from './pages/PostCheckout';
 
 axios.defaults.baseURL = 'https://prof-elec.vercel.app/';
-axios.defaults.baseURL = 'http://localhost:3000';
+// axios.defaults.baseURL = 'http://localhost:3000';
 
 function App() {
 	return (
