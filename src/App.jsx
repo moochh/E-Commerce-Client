@@ -5,9 +5,11 @@ import React from 'react';
 import axios from 'axios';
 import Cart from './pages/Cart';
 import Favorites from './pages/Favorites';
+import Checkout from './pages/Checkout';
+import PostCheckout from './pages/PostCheckout';
 
 axios.defaults.baseURL = 'https://prof-elec.vercel.app/';
-// axios.defaults.baseURL = 'http://localhost:3000';
+axios.defaults.baseURL = 'http://localhost:3000';
 
 function App() {
 	return (
@@ -16,6 +18,8 @@ function App() {
 				<Route path="/" element={<Home />} />
 				<Route path="/cart" element={<Cart />} />
 				<Route path="/favorites" element={<Favorites />} />
+				<Route path="/checkout" element={<Checkout />} />
+				<Route path="/postcheckout" element={<PostCheckout />} />
 			</Routes>
 		</Router>
 	);

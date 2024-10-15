@@ -7,6 +7,8 @@ const Cart = () => {
 	const [allProducts, setAllProducts] = useState([]);
 	const userID = '9a7b3d29-bf02-4cb8-9b1e-1d394c54e000';
 	const isInitialMount = useRef(true);
+	const users = ['test_user_1', 'test_user_2', 'test_user_3'];
+	const [selectedUser, setSelectedUser] = useState(users[0]);
 
 	useEffect(() => {
 		async function fetchAllProducts() {
@@ -21,28 +23,12 @@ const Cart = () => {
 
 	useEffect(() => {
 		async function fetchCart() {
-			const response = await axios.get(`/cart/${userID}`);
+			const response = await axios.get(`/cart/${selectedUser}`);
 			const data = response.data;
 
-			const updatedCart = data
-				.map((cartProduct) => {
-					const productData = allProducts.find(
-						(product) => product.id === cartProduct.product_id
-					);
+			console.log(data);
 
-					if (productData) {
-						// Assign quantity if productData is found
-						return {
-							...productData,
-							quantity: cartProduct.quantity
-						};
-					}
-					return null; // Return null if the product is not found
-				})
-				.filter(Boolean); // Remove any null values
-
-			// Set the cart state with the updated cart
-			setCart(updatedCart);
+			setCart(data);
 		}
 
 		if (isInitialMount.current) {
@@ -50,7 +36,11 @@ const Cart = () => {
 		} else {
 			fetchCart();
 		}
-	}, [allProducts]);
+	}, [selectedUser]);
+
+	const selectUser = async (user) => {
+		setSelectedUser(user);
+	};
 
 	const addToCart = async (product) => {
 		product.quantity = 1;
@@ -61,7 +51,7 @@ const Cart = () => {
 			quantity: product.quantity
 		};
 
-		const response = await axios.post(`/cart/${userID}`, body);
+		const response = await axios.post(`/cart/${selectedUser}`, body);
 		console.log(response.status);
 	};
 
@@ -72,7 +62,9 @@ const Cart = () => {
 			product_id: id
 		};
 
-		const response = await axios.delete(`/cart/${userID}`, { data: body });
+		const response = await axios.delete(`/cart/${selectedUser}`, {
+			data: body
+		});
 		console.log(response.status);
 	};
 
@@ -88,7 +80,7 @@ const Cart = () => {
 			quantity: quantity + 1
 		};
 
-		const response = await axios.put(`/cart/${userID}`, body);
+		const response = await axios.put(`/cart/${selectedUser}`, body);
 		console.log(response.status);
 	};
 
@@ -105,7 +97,7 @@ const Cart = () => {
 				quantity: quantity - 1
 			};
 
-			const response = await axios.put(`/cart/${userID}`, body);
+			const response = await axios.put(`/cart/${selectedUser}`, body);
 			console.log(response.status);
 		}
 	};
@@ -113,6 +105,19 @@ const Cart = () => {
 	return (
 		<>
 			<Nav />
+
+			<div className="user-selector">
+				{users.map((user) => (
+					<button
+						className={user == selectedUser ? 'active' : ''}
+						key={user}
+						onClick={() => selectUser(user)}>
+						{user}
+					</button>
+				))}
+			</div>
+
+			<h6 style={{ marginBottom: '24px' }}>Current User: {selectedUser}</h6>
 
 			<div className="flex gapped">
 				<h1>Cart</h1>

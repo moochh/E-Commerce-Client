@@ -7,6 +7,8 @@ const Favorites = () => {
 	const [allProducts, setAllProducts] = useState([]);
 	const userID = '9a7b3d29-bf02-4cb8-9b1e-1d394c54e000';
 	const isInitialMount = useRef(true);
+	const users = ['test_user_1', 'test_user_2', 'test_user_3'];
+	const [selectedUser, setSelectedUser] = useState(users[0]);
 
 	useEffect(() => {
 		async function fetchAllProducts() {
@@ -21,19 +23,10 @@ const Favorites = () => {
 
 	useEffect(() => {
 		async function fetchFavorites() {
-			const response = await axios.get(`/favorites/${userID}`);
+			const response = await axios.get(`/favorites/${selectedUser}`);
 			const data = response.data;
 
-			const updatedFavorites = data
-				.map((favorite) => {
-					return allProducts.find(
-						(product) => product.id === favorite.product_id
-					);
-				})
-				.filter(Boolean); // This will remove any undefined values if a product is not found
-
-			// Set the favorites state with the updated favorites
-			setFavorites(updatedFavorites);
+			setFavorites(data);
 		}
 
 		if (isInitialMount.current) {
@@ -41,7 +34,7 @@ const Favorites = () => {
 		} else {
 			fetchFavorites();
 		}
-	}, [allProducts]);
+	}, [selectedUser]);
 
 	const addToFavorites = async (product) => {
 		setFavorites((prevFavorites) => [...prevFavorites, product]);
@@ -50,7 +43,7 @@ const Favorites = () => {
 			product_id: product.id
 		};
 
-		const response = await axios.post(`/favorites/${userID}`, body);
+		const response = await axios.post(`/favorites/${selectedUser}`, body);
 		console.log(response.status);
 	};
 
@@ -63,13 +56,28 @@ const Favorites = () => {
 			product_id: id
 		};
 
-		const response = await axios.delete(`/favorites/${userID}`, { data: body });
+		const response = await axios.delete(`/favorites/${selectedUser}`, {
+			data: body
+		});
 		console.log(response.status);
 	};
 
 	return (
 		<div>
 			<Nav />
+
+			<div className="user-selector">
+				{users.map((user) => (
+					<button
+						className={user == selectedUser ? 'active' : ''}
+						key={user}
+						onClick={() => setSelectedUser(user)}>
+						{user}
+					</button>
+				))}
+			</div>
+
+			<h6 style={{ marginBottom: '24px' }}>Current User: {selectedUser}</h6>
 
 			<h1>Favorites</h1>
 
