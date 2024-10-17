@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import Nav from '../components/Nav';
+import { storage } from '../firebase';
+import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 
 const Image = () => {
 	const [image, setImage] = useState(null);
@@ -19,21 +21,18 @@ const Image = () => {
 	const handleUpload = async () => {
 		if (!image) return;
 
-		const formData = new FormData();
-		formData.append('image', image);
+		const storageRef = ref(storage, `images/${image.name}`);
 
 		try {
-			const response = await axios.post('/image-test', formData);
+			// Upload the file without tracking progress
+			await uploadBytes(storageRef, image);
 
-			if (response.status === 201) {
-				console.log(response.data);
-
-				setUrl(response.data.url);
-			} else if (response.status === 500) {
-				alert('Internal server error');
-			}
+			// Get the file's download URL
+			const downloadURL = await getDownloadURL(storageRef);
+			setUrl(downloadURL);
+			console.log('File available at', downloadURL);
 		} catch (error) {
-			console.error('Error uploading image:', error);
+			console.error('Upload failed:', error);
 		}
 	};
 

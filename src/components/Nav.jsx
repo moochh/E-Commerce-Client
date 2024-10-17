@@ -20,6 +20,12 @@ const Nav = () => {
 					Favorites
 				</Link>
 			</button>
+
+			<button>
+				<Link to="/image" className="link">
+					Image
+				</Link>
+			</button>
 			{/* 
 			<button>
 				<Link to="/checkout" className="link">

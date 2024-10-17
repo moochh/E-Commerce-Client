@@ -5,6 +5,8 @@ import ProductsList from '../components/products/ProductsList';
 import axios from 'axios';
 import sampleImage from '../assets/sample.png';
 import { Form } from 'react-router-dom';
+import { storage } from '../firebase';
+import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 
 const Home = () => {
 	const [categories, setCategories] = useState([]);
@@ -139,17 +141,16 @@ const Home = () => {
 			return;
 		}
 
-		const productData = new FormData();
-		productData.append('name', name);
-		productData.append('short_description', shortDescription);
-		productData.append('long_description', longDescription);
-		productData.append('category', category);
-		productData.append('price', price);
-		productData.append('stock_quantity', stock_quantity);
-		productData.append('type', type);
-		productData.append('dimensions', dimensions);
-		productData.append('brand', brand);
-		productData.append('image', image);
+		const productData = new Object();
+		productData.name = name;
+		productData.short_description = shortDescription;
+		productData.long_description = longDescription;
+		productData.category = category;
+		productData.price = price;
+		productData.stock_quantity = stock_quantity;
+		productData.type = type;
+		productData.dimensions = dimensions;
+		productData.brand = brand;
 
 		try {
 			const result = await axios.post('/products', productData);
@@ -157,15 +158,38 @@ const Home = () => {
 
 			if (result.status === 201) {
 				alert('Product added successfully');
+
+				await uploadImage(result.data.product_id);
 				resetInputs();
 				setChanged(changed + 1);
 			}
 		} catch (error) {
 			if (error.status === 400) {
-				alert('Product already exists');
+				alert(error.response.data.error);
 			} else if (error.status === 500) {
 				alert('Internal server error');
 			}
+		}
+	}
+
+	async function uploadImage(id) {
+		const storageRef = ref(storage, `products/${id}`);
+
+		try {
+			// Upload the file without tracking progress
+			await uploadBytes(storageRef, image);
+
+			// Get the file's download URL
+			const downloadURL = await getDownloadURL(storageRef);
+
+			const productData = new Object();
+			productData.image_url = downloadURL;
+			productData.product_id = id;
+
+			const result = await axios.put('/product-image', productData);
+			console.log(result.data);
+		} catch (error) {
+			console.error('Upload failed:', error);
 		}
 	}
 
