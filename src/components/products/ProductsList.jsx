@@ -22,7 +22,7 @@ const ProductsList = ({ trigger, triggerCategories, setProductNames }) => {
 	}, [trigger, changed]);
 
 	const deleteProduct = async (id) => {
-		const result = await axios.delete(`/products/${id}`);
+		const result = await axios.delete(`/hard-delete/${id}`);
 		console.log(result);
 
 		if (result.status === 200) {
