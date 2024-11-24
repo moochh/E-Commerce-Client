@@ -8,6 +8,7 @@ import Favorites from './pages/Favorites';
 import Checkout from './pages/Checkout';
 import PostCheckout from './pages/PostCheckout';
 import Image from './pages/Image';
+import UpdateImage from './pages/UpdateImage';
 
 axios.defaults.baseURL = 'https://prof-elec.vercel.app/';
 // axios.defaults.baseURL = 'http://localhost:3000';
@@ -21,7 +22,8 @@ function App() {
 				<Route path="/favorites" element={<Favorites />} />
 				<Route path="/checkout" element={<Checkout />} />
 				<Route path="/postcheckout" element={<PostCheckout />} />
-				<Route path="/image" element={<Image />} />
+				{/* <Route path="/image" element={<Image />} /> */}
+				<Route path="/image" element={<UpdateImage />} />
 			</Routes>
 		</Router>
 	);

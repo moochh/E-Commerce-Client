@@ -23,7 +23,7 @@ const Nav = () => {
 
 			<button>
 				<Link to="/image" className="link">
-					Image
+					Update Image
 				</Link>
 			</button>
 			{/* 
